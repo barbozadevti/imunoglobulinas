@@ -1,0 +1,168 @@
+<title>Perfil de Imunoglobulinas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: coluna única de leitura; formulário no topo, resultado e tabela de critérios abaixo. Navy + magenta, como a lâmina do congresso. */
+:root{
+  --bg:#f5f6fa; --surface:#ffffff; --fg:#14203d; --muted:#5b6785; --line:#d9deea;
+  --navy:#14203d; --navy-fg:#ffffff; --accent:#c2185b; --accent-soft:#fbe4ee; --ok:#1b7a4b; --ok-soft:#dff3e8; --warn:#9a5b00; --warn-soft:#fdf0d5;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1426; --surface:#17203a; --fg:#e8ecf7; --muted:#9aa6c6; --line:#2b3658;
+  --navy:#0a0f1f; --navy-fg:#e8ecf7; --accent:#ff6fa5; --accent-soft:#3a1730; --ok:#5fd39a; --ok-soft:#12332a; --warn:#f0b957; --warn-soft:#3a2d10; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1426; --surface:#17203a; --fg:#e8ecf7; --muted:#9aa6c6; --line:#2b3658;
+  --navy:#0a0f1f; --navy-fg:#e8ecf7; --accent:#ff6fa5; --accent-soft:#3a1730; --ok:#5fd39a; --ok-soft:#12332a; --warn:#f0b957; --warn-soft:#3a2d10; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 var(--sans);margin:0;padding-block:0 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{background:var(--navy);color:var(--navy-fg);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:24px max(16px,env(safe-area-inset-left,0px)) 22px}
+header .in{max-width:760px;margin:0 auto}
+header small{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+h1{font-size:clamp(22px,5vw,30px);line-height:1.15;margin:6px 0 4px;text-wrap:balance}
+header p{margin:0;opacity:.8;font-size:14px}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:500;min-width:0}
+label span{color:var(--muted);font-weight:400;font-size:12px}
+input[type=number]{font:500 20px var(--mono);padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.unit{font-size:12px;color:var(--muted)}
+details{margin-top:14px}
+summary{cursor:pointer;color:var(--muted);font-size:14px}
+details .grid{margin-top:10px}
+input[type=number].ref{font-size:16px}
+.checks{display:flex;flex-direction:column;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.check{flex-direction:row;align-items:flex-start;gap:10px;font-weight:400}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);flex:none}
+.result{border-left:6px solid var(--accent);display:flex;flex-direction:column;gap:10px}
+.result.ok{border-left-color:var(--ok)} .result.warn{border-left-color:var(--warn)}
+.result h3{margin:0;font-size:20px;text-wrap:balance}
+.result p{margin:0}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{font:500 13px var(--mono);padding:4px 9px;border-radius:99px;background:var(--bg);border:1px solid var(--line)}
+.tag.low{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+ul.todo{margin:0;padding-left:20px;color:var(--muted);font-size:14px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--navy);color:var(--navy-fg);font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+tr.hit td{background:var(--accent-soft);font-weight:500}
+tr.hit td:first-child{box-shadow:inset 4px 0 0 var(--accent)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{font:600 15px var(--sans);padding:11px 16px;border-radius:8px;border:1px solid var(--navy);background:var(--navy);color:var(--navy-fg);cursor:pointer;text-decoration:none;display:inline-block}
+.btn.alt{background:transparent;color:var(--fg);border-color:var(--line)}
+footer{font-size:13px;color:var(--muted)}
+@media (max-width:420px){.grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.result{transition:border-color .2s}}
+</style>
+
+<header><div class="in">
+  <small>56º Congresso Brasileiro de Otorrinolaringologia · Curitiba</small>
+  <h1>Perfil de imunoglobulinas séricas</h1>
+  <p>Digite IgG, IgA e IgM e veja qual padrão da tabela de diagnóstico se encaixa.</p>
+</div></header>
+
+<div class="wrap">
+  <form class="card" id="f" onsubmit="return false">
+    <h2>Dosagem sérica</h2>
+    <div class="grid">
+      <label for="igg">IgG <span>mg/dL</span><input id="igg" type="number" inputmode="decimal" min="0" step="any" value="150"></label>
+      <label for="iga">IgA <span>mg/dL</span><input id="iga" type="number" inputmode="decimal" min="0" step="any" value="12"></label>
+      <label for="igm">IgM <span>mg/dL</span><input id="igm" type="number" inputmode="decimal" min="0" step="any" value="15"></label>
+    </div>
+    <details>
+      <summary>Limites inferiores do laboratório (ajuste conforme a idade do paciente)</summary>
+      <div class="grid">
+        <label for="rg">IgG mínimo <input class="ref" id="rg" type="number" inputmode="decimal" step="any" value="700"></label>
+        <label for="ra">IgA mínimo <input class="ref" id="ra" type="number" inputmode="decimal" step="any" value="70"></label>
+        <label for="rm">IgM mínimo <input class="ref" id="rm" type="number" inputmode="decimal" step="any" value="40"></label>
+      </div>
+      <p class="unit">Valores iniciais são de referência para adultos. Em crianças os limites mudam com a idade: use os do seu laboratório.</p>
+    </details>
+    <div class="checks">
+      <label class="check" for="vac"><input type="checkbox" id="vac"> Resposta ruim a vacinas (polissacarídeos ou proteínas)</label>
+      <label class="check" for="sub"><input type="checkbox" id="sub"> Subclasses de IgG pelo menos 2 desvios-padrão abaixo da média para a faixa etária</label>
+      <label class="check" for="sec"><input type="checkbox" id="sec"> Causa secundária presente (medicamentos, neoplasia, perda proteica, etc.)</label>
+    </div>
+  </form>
+
+  <section class="card result" id="res" aria-live="polite"></section>
+
+  <section>
+    <h2>Critérios da tabela</h2>
+    <div class="tablewrap"><table id="tb"></table></div>
+  </section>
+
+  <div class="actions">
+    <a class="btn" id="wa" href="#" target="_blank" rel="noopener">Enviar resultado por WhatsApp</a>
+    <button class="btn alt" id="cp" type="button">Copiar resultado</button>
+  </div>
+
+  <footer>Ferramenta de apoio ao raciocínio, baseada na tabela "Diagnóstico – dosagem sérica de imunoglobulinas" apresentada no congresso. Os valores da lâmina são "geralmente"; o diagnóstico depende da avaliação clínica, da idade e da exclusão de causas secundárias. Os dados ficam só neste aparelho e não são enviados a nenhum servidor.</footer>
+</div>
+
+<script>
+var ROWS=[
+ {k:"sad",n:"Deficiência de anticorpos específicos (SAD)",g:"Normal",a:"Normal",m:"Normal"},
+ {k:"hipo",n:"Hipogamaglobulinemia",g:"Geralmente < 200 mg/dL",a:"Geralmente < 20 mg/dL",m:"Geralmente < 20 mg/dL"},
+ {k:"icv",n:"Imunodeficiência comum variável (ICV)",g:"Geralmente < 400 mg/dL",a:"Baixa",m:"Baixa"},
+ {k:"sub",n:"Deficiência de subclasses de IgG",g:"Subclasses ao menos 2 DP abaixo da média da faixa etária",a:"Pode ser baixa",m:"Pode ser baixa"},
+ {k:"iga",n:"Deficiência seletiva de IgA",g:"Normal",a:"< 7 mg/dL",m:"Normal"},
+ {k:"sec",n:"Imunodeficiência secundária",g:"Baixa",a:"Normal",m:"Normal"}
+];
+var T={
+ sad:["Padrão compatível com deficiência de anticorpos específicos (SAD)","Imunoglobulinas normais com resposta vacinal ruim.",["Repetir sorologia vacinal (pneumococo, tétano) e avaliar a resposta","Encaminhar ao imunologista"]],
+ hipo:["Padrão compatível com hipogamaglobulinemia","IgG, IgA e IgM muito reduzidas.",["Excluir causas secundárias (fármacos, neoplasias, perda proteica)","Avaliar resposta vacinal e encaminhar ao imunologista"]],
+ icv:["Padrão compatível com imunodeficiência comum variável (ICV)","IgG reduzida com IgA e IgM baixas.",["Excluir causas secundárias de hipogamaglobulinemia","Avaliar resposta vacinal e linfócitos B (imunofenotipagem)","Encaminhar ao imunologista"]],
+ sub:["Padrão compatível com deficiência de subclasses de IgG","IgG total pode estar normal; o achado está nas subclasses.",["Confirmar com nova dosagem de subclasses","Avaliar resposta vacinal"]],
+ iga:["Padrão compatível com deficiência seletiva de IgA","IgA indetectável ou muito baixa com IgG e IgM normais.",["Confirmar em segunda dosagem","Atenção a doença celíaca e autoimunidade associadas","Cuidado com transfusões e imunoglobulina endovenosa, por risco de anticorpos anti-IgA"]],
+ sec:["Padrão compatível com imunodeficiência secundária","IgG baixa com IgA e IgM normais.",["Procurar a causa: fármacos, síndrome nefrótica, enteropatia perdedora de proteínas, neoplasias linfoproliferativas","Repetir após tratar a causa"]]
+};
+function $(i){return document.getElementById(i)}
+function num(i){var v=parseFloat($(i).value);return isNaN(v)?null:v}
+function classify(){
+  var g=num("igg"),a=num("iga"),m=num("igm");
+  if(g===null||a===null||m===null)return null;
+  var rg=num("rg")||700,ra=num("ra")||70,rm=num("rm")||40;
+  var gl=g<rg,al=a<ra,ml=m<rm,vac=$("vac").checked,sub=$("sub").checked,sec=$("sec").checked;
+  var k=null,extra=[];
+  if(a<7&&!gl&&!ml)k="iga";
+  else if(g<200&&a<20&&m<20)k="hipo";
+  else if(g<400&&al&&ml)k="icv";
+  else if(gl&&!al&&!ml)k="sec";
+  else if(gl)k="mista";
+  else if(!gl&&!al&&!ml){ if(sub)k="sub"; else if(vac)k="sad"; else k="normal"; }
+  else k="outro";
+  if(sec&&(k==="hipo"||k==="icv"||k==="mista"))extra.push("Há causa secundária marcada: considere imunodeficiência secundária antes de rotular como primária.");
+  if(a<7&&gl)extra.push("IgA < 7 mg/dL com IgG baixa não é deficiência seletiva de IgA.");
+  return {g:g,a:a,m:m,gl:gl,al:al,ml:ml,k:k,extra:extra};
+}
+var text="";
+function render(){
+  var r=classify(),box=$("res");
+  if(!r){box.className="card result warn";box.innerHTML="<h3>Preencha IgG, IgA e IgM</h3>";text="";$("wa").href="#";return}
+  var tags='<div class="tags"><span class="tag'+(r.gl?' low':'')+'">IgG '+r.g+(r.gl?' ↓':'')+'</span><span class="tag'+(r.al?' low':'')+'">IgA '+r.a+(r.al?' ↓':'')+'</span><span class="tag'+(r.ml?' low':'')+'">IgM '+r.m+(r.ml?' ↓':'')+'</span></div>';
+  var title,desc,todo=[],cls="card result";
+  if(T[r.k]){title=T[r.k][0];desc=T[r.k][1];todo=T[r.k][2]}
+  else if(r.k==="normal"){title="Sem padrão de deficiência pelas dosagens";desc="IgG, IgA e IgM dentro do limite informado.";todo=["Se a suspeita clínica persistir, avaliar resposta vacinal (SAD) e subclasses de IgG"];cls+=" ok"}
+  else if(r.k==="mista"){title="IgG baixa sem encaixe exato na tabela";desc="Combinação fora dos padrões da lâmina.";todo=["Repetir a dosagem","Excluir causas secundárias","Encaminhar ao imunologista"];cls+=" warn"}
+  else{title="Combinação fora dos padrões da tabela";desc="IgG normal com IgA ou IgM reduzidas. Pode ser deficiência de IgA parcial ou de IgM isolada.";todo=["Repetir a dosagem e correlacionar com a clínica"];cls+=" warn"}
+  box.className=cls;
+  box.innerHTML=tags+"<h3>"+title+"</h3><p>"+desc+"</p>"+r.extra.map(function(e){return"<p><strong>Atenção:</strong> "+e+"</p>"}).join("")+(todo.length?'<ul class="todo">'+todo.map(function(t){return"<li>"+t+"</li>"}).join("")+"</ul>":"");
+  var hit=T[r.k]?r.k:null;
+  $("tb").innerHTML="<tr><th>Diagnóstico</th><th>IgG</th><th>IgA</th><th>IgM</th></tr>"+ROWS.map(function(x){return'<tr'+(x.k===hit?' class="hit"':'')+'><td>'+x.n+'</td><td>'+x.g+'</td><td>'+x.a+'</td><td>'+x.m+'</td></tr>'}).join("");
+  text="Perfil de imunoglobulinas\nIgG "+r.g+" | IgA "+r.a+" | IgM "+r.m+" mg/dL\n"+title+"\n(Apoio ao raciocínio; não substitui avaliação clínica.)";
+  $("wa").href="https://wa.me/?text="+encodeURIComponent(text);
+}
+$("f").addEventListener("input",render);
+$("cp").addEventListener("click",function(){
+  var b=$("cp");
+  function ok(){b.textContent="Copiado";setTimeout(function(){b.textContent="Copiar resultado"},1500)}
+  try{navigator.clipboard.writeText(text).then(ok,function(){})}catch(e){}
+});
+render();
+</script>
